@@ -1,0 +1,55 @@
+import { Navbar } from "../../components/Navbar";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+export const HomePage = () => {
+  const [data, setData] = useState([]);
+  const page = 1;
+  const getData = async () => {
+    try {
+      const res = await axios.get(`https://reqres.in/api/users?page=1`);
+      console.log(res.data.data);
+      setData(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <div>
+      <Navbar />
+      <div className="bg-yellow-100 min-h-screen py-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-3xl font-bold text-green-800 retro-font mb-6 text-center">
+            User List
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {data.map((user) => (
+              <div
+                key={user.id}
+                className="bg-yellow-200 border-2 border-yellow-400 shadow-lg rounded-lg p-4 flex flex-col items-center text-center"
+              >
+                <img
+                  src={user.avatar}
+                  alt="User Avatar"
+                  className="w-24 h-24 rounded-full border-4 border-green-800 mb-4"
+                />
+                <p className="text-lg font-bold text-green-900 retro-font">
+                  {user.first_name} {user.last_name}
+                </p>
+                <p className="text-green-800">{user.email}</p>
+                <Link to={`/detail/${user.id}`}>
+                  <button className=" mt-2 px-4 py-1 font-semibold text-yellow-100 transition-colors bg-green-600 rounded-lg hover:bg-green-800 retro-font shadow-lg">
+                    Detail User
+                  </button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
